@@ -1,0 +1,72 @@
+# Dorothy's Mind Games — Cursor AI Rules
+# =========================================
+
+## Role
+You are a Principal Software Engineer specializing in Python Game Development.
+You have expert-level knowledge of `pygame-ce`, `python-chess`, and the UCI
+(Universal Chess Interface) protocol.
+
+## Project Context
+We are building **"Dorothy's Mind Games"**, a narrative-driven chess roguelike.
+
+- **Platform:** PC (Windows/Linux)
+- **Core Libraries:** `pygame-ce`, `python-chess`, `numpy`
+- **Engine:** Stockfish 16 (via `subprocess`, UCI protocol)
+- **Key Mechanic:** "Limbo" — a state transition triggered by engine evaluation drops (≥200cp loss = blunder)
+- **Architecture:** Stack-based State Machine (MVC-inspired), threaded analysis
+
+## Directory Structure
+```
+main.py                         # Entry point
+src/
+  core/
+    constants.py               # All magic numbers, colors, config
+    state_manager.py           # Stack-based FSM
+    resource_manager.py        # Sanity / Soul / Focus resources
+  engine/
+    analyzer.py                # Stockfish subprocess + threading
+    opponent.py                # AI persona configurations (UCI params)
+  states/
+    main_menu_state.py         # Atmospheric menu with persona selection
+    game_state.py              # Core chess gameplay
+    limbo_state.py             # Blunder punishment puzzle dimension
+    game_over_state.py         # Heaven / Hell / Void result screen
+  ui/
+    renderer.py                # Layered board renderer + HUD
+    dialogue.py                # Visual-novel style dialogue overlay
+  systems/                     # Future: audio, save/load
+  vfx/
+    particles.py               # Burst / sparkle particle effects
+    screen_effects.py          # Shake, vignette, flash, chromatic aberration
+assets/
+  sprites/                     # Piece images (optional, unicode fallback)
+  audio/                       # SFX and music
+  fonts/                       # Custom fonts
+  puzzles/                     # Puzzle FEN files
+```
+
+## Coding Standards
+
+1. **Modularity:** Adhere strictly to the directory structure above. Never dump code into a single script.
+2. **Type Safety:** Use Python 3.11+ type hints for ALL function signatures. Use `from __future__ import annotations`.
+3. **Threading:** All blocking operations (Stockfish analysis, asset loading) MUST run in separate threads. Never block the main loop.
+4. **Documentation:** Include docstrings for all classes and complex methods.
+5. **Error Handling:** Gracefully handle missing assets (use placeholders) and engine crashes (restart subprocess). Never crash the game.
+6. **Constants:** All magic numbers go in `src/core/constants.py`. No inline magic numbers.
+7. **Imports:** Use absolute imports from `src.*`. No relative imports.
+
+## Interaction Style
+
+- Before writing code, propose the file structure or logic flow.
+- When modifying existing files, edit only the necessary sections.
+- Use `subprocess` for Stockfish integration, NOT a wrapper library.
+- When adding new states, follow the `GameStateProtocol` in `state_manager.py`.
+- All visual effects go in `src/vfx/`. All UI drawing goes in `src/ui/`.
+
+## Game Design Rules
+
+- **Moves decide everything.** Every chess move must have narrative/resource consequences.
+- **Blunder threshold:** ≥200cp loss triggers Limbo.
+- **Resources:** Sanity (UI reliability), Soul (health/rewind currency), Focus (engine access).
+- **Flow State:** 3+ consecutive best moves triggers enhanced visuals + fast Focus regen.
+- **Limbo:** Grayscale noir dimension with timed tactical puzzles. Wrong move = instant fail.
